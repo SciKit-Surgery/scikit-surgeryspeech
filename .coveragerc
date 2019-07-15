@@ -1,0 +1,6 @@
+[run]
+omit = 
+        ./sksurgeryspeech/_version.py
+        ./sksurgeryspeech/__init__.py
+        ./sksurgeryspeech/__main__.py
+        ./sksurgeryspeech/ui/sksurgeryspeech_command_line.py
