@@ -1,25 +1,9 @@
 # coding=utf-8
-
-"""Hello world demo module"""
-from sksurgeryspeech.algorithms import addition, multiplication
-
-def run_demo(input_x, input_y, multiply, verbose):
-    """ Run the application """
-
-    if multiply:
-        result = multiplication.multiply_two_numbers(input_x, input_y)
-
-    else:
-        result = addition.add_two_numbers(input_x, input_y)
+from sksurgeryspeech.algorithms import first_test_speech_api as speech_api
+"""Speech api demo module"""
 
 
-    if verbose:
-        if multiply:
-            print("Calculating {} * {}".format(input_x, input_y))
+def run_demo():
+    speech_api.listen()
 
-        else:
-            print("Calculating {} + {}".format(input_x, input_y))
 
-    print("Result is {}".format(result))
-
-    return result
