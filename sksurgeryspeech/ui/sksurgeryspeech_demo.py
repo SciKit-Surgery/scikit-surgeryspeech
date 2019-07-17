@@ -1,25 +1,16 @@
 # coding=utf-8
-
-"""Hello world demo module"""
-from sksurgeryspeech.algorithms import addition, multiplication
-
-def run_demo(input_x, input_y, multiply, verbose):
-    """ Run the application """
-
-    if multiply:
-        result = multiplication.multiply_two_numbers(input_x, input_y)
-
-    else:
-        result = addition.add_two_numbers(input_x, input_y)
+from sksurgeryspeech.algorithms import first_test_speech_api as speech_api
+import time
+"""Speech api demo module"""
 
 
-    if verbose:
-        if multiply:
-            print("Calculating {} * {}".format(input_x, input_y))
+def run_demo():
+    #  this is the main call to start the background thread listening,
+    #  which also later has to be called within the SmartLiver code
 
-        else:
-            print("Calculating {} + {}".format(input_x, input_y))
+    voice_recognition = speech_api.VoiceRecognitionService()
+    voice_recognition.listen()
+    for _ in range(500):
+        time.sleep(0.1)
 
-    print("Result is {}".format(result))
 
-    return result
