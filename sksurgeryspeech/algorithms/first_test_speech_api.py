@@ -1,18 +1,26 @@
 """
 Speech API algorithm
 """
+# pylint: disable=no-name-in-module
 import os
 import logging
 import speech_recognition as sr
+from PySide2.QtCore import QObject, Signal
 
 LOGGER = logging.getLogger("voice_recognition_logger")
 
 
-class VoiceRecognitionService:
+class VoiceRecognitionService(QObject):
     """
     Voice Recognition service which takes an microphone input and converts it
     to text by using the Google Cloud Speech-to-Text API
     """
+
+    next = Signal()
+    previous = Signal()
+    undo = Signal()
+    quit = Signal()
+    voice_command = Signal(str)
 
     def __init__(self):
 
@@ -40,7 +48,7 @@ class VoiceRecognitionService:
         """
         Method which starts listening in the background
         """
-
+        #  self.next.emit()
         # Record Audio
         recognizer = sr.Recognizer()
         microphone = sr.Microphone()
@@ -97,12 +105,26 @@ class VoiceRecognitionService:
             words = recognizer.\
                 recognize_google_cloud(audio,
                                        credentials_json=self.credentials)
-            LOGGER.info("You said: %s", words)
+            #  convert the spoken input in a signal
+            #  for next, quit, previous and undo there are specific signals
+            #  if none of them is said, a generic signal is emitted, containing
+            #  the string of the spoken input
+            if words == "next ":
+                self.next.emit()
+            elif words == "quit ":
+                self.quit.emit()
+            elif words == "previous ":
+                self.previous.emit()
+            elif words == "undo ":
+                self.undo.emit()
+            else:
+                self.voice_command.emit(words)
         except sr.UnknownValueError:
             LOGGER.info("Google Speech Recognition could not understand audio")
         except sr.RequestError as exception:
             LOGGER.info("Could not request results from Google Speech "
                         "Recognition service; %s", exception)
+
         #  call self.listen() again
         #  to get the background thread start listening again
         self.listen()

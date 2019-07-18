@@ -5,7 +5,7 @@
 
 import argparse
 from sksurgeryspeech import __version__
-from sksurgeryspeech.ui.sksurgeryspeech_demo import run_demo
+from sksurgeryspeech.ui import sksurgeryspeech_demo
 
 
 def main(args=None):
@@ -22,4 +22,5 @@ def main(args=None):
 
     args = parser.parse_args(args)
 
-    run_demo()
+    demo = sksurgeryspeech_demo.SpeechRecognitionDemo()
+    demo.run_demo()
