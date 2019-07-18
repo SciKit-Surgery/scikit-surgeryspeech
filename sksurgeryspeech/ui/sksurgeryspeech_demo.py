@@ -48,6 +48,7 @@ class VoiceListener(PySide2.QtCore.QObject):
         Quits application
         :return:
         """
+        LOGGER.info("Quit signal caught... Exit application")
         PySide2.QtCore.QCoreApplication.quit()
 
     @PySide2.QtCore.Slot()
@@ -89,11 +90,14 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         #  instantiate the QCoreApplication
         app = PySide2.QtCore.QCoreApplication()
         #  set up the logger
-        root_logger = logging.getLogger("voice_recognition_logger")
-        root_logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setLevel(logging.INFO)
-        root_logger.addHandler(handler)
+        voice_recognition_logger = logging.getLogger("voice_recognition_logger")
+        voice_recognition_logger.setLevel(logging.INFO)
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        file_handler = logging.FileHandler('voice_recognition_log.log')
+        file_handler.setLevel(logging.INFO)
+        voice_recognition_logger.addHandler(console_handler)
+        voice_recognition_logger.addHandler(file_handler)
 
         #  this is the main call to start the background thread listening,
         #  which also later has to be called within the SmartLiver code
