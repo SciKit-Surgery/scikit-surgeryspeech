@@ -4,6 +4,7 @@ Speech API algorithm
 # pylint: disable=no-name-in-module
 import os
 import logging
+import json
 import speech_recognition as sr
 from PySide2.QtCore import QObject, Signal
 
@@ -40,6 +41,9 @@ class VoiceRecognitionService(QObject):
         key_file_path = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
         with open(key_file_path, 'r') as file:
             self.credentials = file.read()
+
+        #  this raises a ValueError if the credential file isn't a valid json
+        json.loads(self.credentials)
 
         LOGGER.info("Created Voice Recognition Service")
 
