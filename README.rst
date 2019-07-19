@@ -15,10 +15,6 @@ scikit-surgeryspeech
     :target: https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech/commits/master
     :alt: Test coverage
 
-.. image:: https://readthedocs.org/projects/scikit-surgeryspeech/badge/?version=latest
-    :target: http://scikit-surgeryspeech.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
 
 
 Author: Kim-Celine Kahl
@@ -104,15 +100,17 @@ to the recognition service of your choice. Currently available services are:
     recognizer.recognize_houndify(audio, client_id=HOUNDIFY_CLIENT_ID, client_key=HOUNDIFY_CLIENT_KEY)
     recognizer.recognize_ibm(audio, username=IBM_USERNAME, password=IBM_PASSWORD)
 
-Linting
-^^^^^^^
+Python development
+^^^^^^^^^^^^^^^^^^
 
-This code conforms to the PEP8 standard. Pylint can be used to analyse the code:
+This project uses tox. Start with a clean python environment, then do:
 
 ::
 
-    pip install pylint
-    pylint --rcfile=tests/pylintrc sksurgeryspeech
+    pip install tox
+    tox
+
+and the commands that are run can be found in tox.ini.
 
 
 Installing
