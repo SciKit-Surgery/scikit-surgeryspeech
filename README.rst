@@ -48,6 +48,11 @@ You can clone the repository using the following command:
 
     git clone https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech
 
+If you have problems running the application, you might need to install portaudio
+
+::
+
+    brew install portaudio
 
 Running tests
 ^^^^^^^^^^^^^
