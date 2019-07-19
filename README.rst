@@ -21,20 +21,34 @@ scikit-surgeryspeech
 
 
 
-Author: Matt Clarkson
+Author: Kim-Celine Kahl
 
 scikit-surgeryspeech is part of the `SNAPPY`_ software project, developed at the `Wellcome EPSRC Centre for Interventional and Surgical Sciences`_, part of `University College London (UCL)`_.
 
-scikit-surgeryspeech supports Python 2.7 and Python 3.6.
+scikit-surgeryspeech supports Python 3.6.
 
-scikit-surgeryspeech is currently a demo project, which will add/multiply two numbers. Example usage:
+scikit-surgeryspeech is a project which runs the `Python Speech Recognition API`_ in the background listening
+for a specific command (For now "start "). After saying the keyword you can say different commands, which get
+converted to QT Signals.
+
+The speech recognition is done by the `Google Cloud API`_, you have to get the credentials to use it or change the recognition service.
+
+Please explore the project structure, and implement your own functionality.
+
+Example usage
+-------------
+
+To run an example, just start
 
 ::
 
-    python sksurgeryspeech.py 5 8
-    python sksurgeryspeech.py 3 6 --multiply
+    sksurgeryspeech.py
 
-Please explore the project structure, and implement your own functionality.
+Make sure Google Cloud API is set up correctly as described in the section below.
+
+You can then say "start" as keyword and afterwards a command. The command "quit" exits the application.
+
+Note: each time you have already entered a command, you need to say "start" again to trigger the listening to commands.
 
 Developing
 ----------
@@ -54,14 +68,41 @@ If you have problems running the application, you might need to install portaudi
 
     brew install portaudio
 
-Running tests
-^^^^^^^^^^^^^
-Pytest is used for running unit tests:
+Use the Google Cloud speech recognition service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _`Google Cloud API is set up correctly`:
+
+To use the Google Cloud speech recognition service, you need to `get the credentials`_ first. After signing up, you
+should get a json file with your credentials. Download this file and set the environment variable
+
 ::
 
-    pip install pytest
-    python -m pytest
+    GOOGLE_APPLICATION_CREDENTIALS
 
+To the path of your json file. You should then be able to run the application.
+
+Change speech recognition service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To change the speech recognition service if you don't want to use the Google Cloud API, just change the command
+
+::
+
+    words = recognizer.recognize_google_cloud(audio, credentials_json=self.credentials)
+
+(file "first_test_speech_api.py", methods "callback(self, recognizer, audio)", "listen_to_command(self)")
+to the recognition service of your choice. Currently available services are:
+
+::
+
+    recognizer.recognize_sphinx(audio)
+    recognizer.recognize_google(audio)
+    recognizer.recognize_google_cloud(audio, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS)
+    recognizer.recognize_wit(audio, key=WIT_AI_KEY)
+    recognizer.recognize_bing(audio, key=BING_KEY)
+    recognizer.recognize_azure(audio, key=AZURE_SPEECH_KEY)
+    recognizer.recognize_houndify(audio, client_id=HOUNDIFY_CLIENT_ID, client_key=HOUNDIFY_CLIENT_KEY)
+    recognizer.recognize_ibm(audio, username=IBM_USERNAME, password=IBM_PASSWORD)
 
 Linting
 ^^^^^^^
@@ -95,7 +136,6 @@ Useful links
 ^^^^^^^^^^^^
 
 * `Source code repository`_
-* `Documentation`_
 
 
 Licensing and copyright
@@ -113,11 +153,12 @@ Supported by `Wellcome`_ and `EPSRC`_.
 
 .. _`Wellcome EPSRC Centre for Interventional and Surgical Sciences`: http://www.ucl.ac.uk/weiss
 .. _`source code repository`: https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech
-.. _`Documentation`: https://scikit-surgeryspeech.readthedocs.io
 .. _`SNAPPY`: https://weisslab.cs.ucl.ac.uk/WEISS/PlatformManagement/SNAPPY/wikis/home
 .. _`University College London (UCL)`: http://www.ucl.ac.uk/
 .. _`Wellcome`: https://wellcome.ac.uk/
 .. _`EPSRC`: https://www.epsrc.ac.uk/
 .. _`contributing guidelines`: https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech/blob/master/CONTRIBUTING.rst
 .. _`license file`: https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech/blob/master/LICENSE
-
+.. _`Python Speech Recognition API`: https://pypi.org/project/SpeechRecognition/
+.. _`Google Cloud API`: https://cloud.google.com/speech-to-text/
+.. _`get the credentials`: https://console.cloud.google.com/freetrial/signup/tos?_ga=2.263649484.-1718611742.1562839990
