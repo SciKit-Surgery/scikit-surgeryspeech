@@ -6,7 +6,7 @@ Demo for the Speech API module
 import sys
 import logging
 import PySide2.QtCore
-from sksurgeryspeech.algorithms import first_test_speech_api as speech_api
+from sksurgeryspeech.algorithms import voice_recognition_service as speech_api
 
 LOGGER = logging.getLogger("voice_recognition_logger")
 

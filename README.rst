@@ -90,7 +90,7 @@ To change the speech recognition service if you don't want to use the Google Clo
 
     words = recognizer.recognize_google_cloud(audio, credentials_json=self.credentials)
 
-(file "first_test_speech_api.py", methods "callback(self, recognizer, audio)", "listen_to_command(self)")
+(file "voice_recognition_service.py", methods "callback(self, recognizer, audio)", "listen_to_command(self)")
 to the recognition service of your choice. Currently available services are:
 
 ::
