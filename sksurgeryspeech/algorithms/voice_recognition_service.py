@@ -75,8 +75,7 @@ class VoiceRecognitionService(QObject):
         try:
             # google cloud speech to text with credentials (json file)
             words = recognizer\
-                .recognize_google_cloud(audio,
-                                        credentials_json=self.credentials)
+                .recognize_sphinx(audio)
             LOGGER.info("You said: %s", words)
             #  if the string equals a certain keyword (here "start")
             #  the background thread is stopped and the a method
@@ -85,9 +84,9 @@ class VoiceRecognitionService(QObject):
                 self.stop_listen(wait_for_stop=False)
                 self.listen_to_command()
         except sr.UnknownValueError:
-            LOGGER.info("Google Speech Recognition could not understand audio")
+            LOGGER.info("Sphinx could not understand audio")
         except sr.RequestError as exception:
-            LOGGER.info("Could not request results from Google Speech "
+            LOGGER.info("Could not request results from Sphinx "
                         "Recognition service; %s", exception)
 
     def listen_to_command(self):
@@ -107,26 +106,25 @@ class VoiceRecognitionService(QObject):
             #  convert command to string,
             #  this string should later be used to fire a certain GUI command
             words = recognizer.\
-                recognize_google_cloud(audio,
-                                       credentials_json=self.credentials)
+                recognize_sphinx(audio)
             #  convert the spoken input in a signal
             #  for next, quit, previous and undo there are specific signals
             #  if none of them is said, a generic signal is emitted, containing
             #  the string of the spoken input
-            if words == "next ":
+            if words == "next":
                 self.next.emit()
-            elif words == "quit ":
+            elif words == "quit":
                 self.quit.emit()
-            elif words == "previous ":
+            elif words == "previous":
                 self.previous.emit()
-            elif words == "undo ":
+            elif words == "undo":
                 self.undo.emit()
             else:
                 self.voice_command.emit(words)
         except sr.UnknownValueError:
-            LOGGER.info("Google Speech Recognition could not understand audio")
+            LOGGER.info("Sphinx could not understand audio")
         except sr.RequestError as exception:
-            LOGGER.info("Could not request results from Google Speech "
+            LOGGER.info("Could not request results from Sphinx "
                         "Recognition service; %s", exception)
 
         #  call self.listen() again
