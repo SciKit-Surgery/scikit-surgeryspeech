@@ -17,11 +17,12 @@ class VoiceListener(PySide2.QtCore.QObject):
     Class which contains the slots for the demo application
     """
 
+    terminate_thread = PySide2.QtCore.Signal()
+
     @PySide2.QtCore.Slot()
     def on_next(self):
         """
         Slot for next signal
-        :return:
         """
         LOGGER.info("Next signal caught")
 
@@ -29,7 +30,6 @@ class VoiceListener(PySide2.QtCore.QObject):
     def on_previous(self):
         """
         Slot for the previous signal
-        :return:
         """
         LOGGER.info("Previous signal caught")
 
@@ -37,7 +37,6 @@ class VoiceListener(PySide2.QtCore.QObject):
     def on_undo(self):
         """
         Slot for the undo signal
-        :return:
         """
         LOGGER.info("Undo signal caught")
 
@@ -46,7 +45,6 @@ class VoiceListener(PySide2.QtCore.QObject):
         """
         Slot for the quit signal
         Quits application
-        :return:
         """
         LOGGER.info("Quit signal caught... Exit application")
         PySide2.QtCore.QCoreApplication.quit()
@@ -56,7 +54,6 @@ class VoiceListener(PySide2.QtCore.QObject):
         """
         Slot for the voice signal,
         which just contains the microphone input as string
-        :return:
         """
         LOGGER.info("Generic voice signal caught with input: %s", input_string)
 
@@ -71,8 +68,30 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         Constructor.
         """
         super(SpeechRecognitionDemo, self).__init__()
+
+        #  set up the logger
+        voice_recognition_logger = logging.getLogger("voice_recognition_logger")
+        voice_recognition_logger.setLevel(logging.INFO)
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        file_handler = logging.FileHandler('voice_recognition_log.log')
+        file_handler.setLevel(logging.INFO)
+        voice_recognition_logger.addHandler(console_handler)
+        voice_recognition_logger.addHandler(file_handler)
+
+        #  create VoiceRecognitionService()
         self.voice_recognition = speech_api.VoiceRecognitionService()
+        #  create VoiceListener() which in this example has all the slots to
+        #  react to the signals from the VoiceRecognitionService()
         self.listener = VoiceListener()
+
+        #  Move the VoiceRecognitionService() to a separate thread so it doesn't
+        #  block the main thread
+        self.listener_thread = PySide2.QtCore.QThread()
+        self.voice_recognition.timer.moveToThread(self.listener_thread)
+        self.voice_recognition.moveToThread(self.listener_thread)
+        self.listener_thread.started.connect(self.voice_recognition.run)
+
         #  connect the Signals emitted by the VoiceRecognitionService()
         #  with the Slots of the VoiceListener
         self.voice_recognition.next.connect(self.listener.on_next)
@@ -85,23 +104,11 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
     def run_demo(self):
         """
         Entry point to run the demo
-        :return:
         """
         #  instantiate the QCoreApplication
         app = PySide2.QtCore.QCoreApplication()
-        #  set up the logger
-        voice_recognition_logger = logging.getLogger("voice_recognition_logger")
-        voice_recognition_logger.setLevel(logging.INFO)
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
-        file_handler = logging.FileHandler('voice_recognition_log.log')
-        file_handler.setLevel(logging.INFO)
-        voice_recognition_logger.addHandler(console_handler)
-        voice_recognition_logger.addHandler(file_handler)
-
-        #  this is the main call to start the background thread listening,
-        #  which also later has to be called within the SmartLiver code
-        self.voice_recognition.listen()
+        #  this is the main call to start the background thread listening
+        self.listener_thread.start()
         #  start the application, meaning starting the infinite Event Loop which
         #  stops when the user says "start" followed by "quit"
         return sys.exit(app.exec_())
