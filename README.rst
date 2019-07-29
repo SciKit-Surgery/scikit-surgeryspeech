@@ -24,10 +24,12 @@ scikit-surgeryspeech is part of the `SNAPPY`_ software project, developed at the
 scikit-surgeryspeech supports Python 3.6.
 
 scikit-surgeryspeech is a project which runs the `Python Speech Recognition API`_ in the background listening
-for a specific command (For now "start "). After saying the keyword you can say different commands, which get
+for a specific command. After saying the keyword you can say different commands, which get
 converted to QT Signals.
 
 The speech recognition is done by the `Google Cloud API`_, you have to get the credentials to use it or change the recognition service.
+
+Keyword detection is done by the `Porcupine API`_, you have to set different paths in your environment variables to get it running, described below.
 
 Please explore the project structure, and implement your own functionality.
 
@@ -42,9 +44,11 @@ To run an example, just start
 
 Make sure Google Cloud API is set up correctly as described in the section below.
 
-You can then say "start" as keyword and afterwards a command. The command "quit" exits the application.
+Also you have to set all the Parameters for the Porcupine keyword detection, also described below.
 
-Note: each time you have already entered a command, you need to say "start" again to trigger the listening to commands.
+You can then say the keyword depending on the Porcupine keyword file you chose and afterwards a command. The command "quit" exits the application.
+
+Note: each time you have already entered a command, you need to say the keyword again to trigger the listening to commands.
 
 Developing
 ----------
@@ -64,6 +68,30 @@ If you have problems running the application, you might need to install portaudi
 
     brew install portaudio
 
+Set up the Porcupine keyword detection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are running the keyword example, you need to clone the Porcupine API
+
+::
+
+    git clone https://github.com/Picovoice/Porcupine.git
+
+Then, you have to set the following environment variables (here the paths are just relative to the Porcupine folder, set the full paths) :
+
+::
+
+    PYTHONPATH=Porcupine\binding\python
+    PORCUPINE_DYNAMIC_LIBRARY=Porcupine\lib\<your os>\<your processor type>\<dynamic-library-file>
+    PORCUPINE_PARAMS=Porcupine\lib\common\porcupine_params.pv
+    PORCUPINE_KEYWORD=Porcupine\resources\keyword_files\<your os>\<keyword file of your choice>
+
+You can also `generate your own keyword files`_
+
+If you are using the speech recognition service within your own application, you have to start a background thread which calls the method to listen to the keyword over and over again.
+
+You can find an example how to create such a thread in the sksurgeryspech_demo.py
+
 Use the Google Cloud speech recognition service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. _`Google Cloud API is set up correctly`:
@@ -77,6 +105,7 @@ should get a json file with your credentials. Download this file and set the env
 
 To the path of your json file. You should then be able to run the application.
 
+
 Change speech recognition service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -86,7 +115,7 @@ To change the speech recognition service if you don't want to use the Google Clo
 
     words = recognizer.recognize_google_cloud(audio, credentials_json=self.credentials)
 
-(file "voice_recognition_service.py", methods "callback(self, recognizer, audio)", "listen_to_command(self)")
+(file "voice_recognition_service.py", method "listen_to_command(self)")
 to the recognition service of your choice. Currently available services are:
 
 ::
@@ -159,4 +188,6 @@ Supported by `Wellcome`_ and `EPSRC`_.
 .. _`license file`: https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech/blob/master/LICENSE
 .. _`Python Speech Recognition API`: https://pypi.org/project/SpeechRecognition/
 .. _`Google Cloud API`: https://cloud.google.com/speech-to-text/
+.. _`Porcupine API`: https://github.com/Picovoice/Porcupine
+.. _`generate your own keyword files`: https://github.com/Picovoice/Porcupine/tree/master/tools/optimizer
 .. _`get the credentials`: https://console.cloud.google.com/freetrial/signup/tos?_ga=2.263649484.-1718611742.1562839990
