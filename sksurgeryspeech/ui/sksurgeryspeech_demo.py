@@ -17,7 +17,12 @@ class VoiceListener(PySide2.QtCore.QObject):
     Class which contains the slots for the demo application
     """
 
-    terminate_thread = PySide2.QtCore.Signal()
+    @PySide2.QtCore.Slot()
+    def on_start_listen(self):
+        """
+        Slot when the user says the keyword
+        """
+        LOGGER.info("Listening for command")
 
     @PySide2.QtCore.Slot()
     def on_next(self):
@@ -94,6 +99,8 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
 
         #  connect the Signals emitted by the VoiceRecognitionService()
         #  with the Slots of the VoiceListener
+        self.voice_recognition.start_listen\
+            .connect(self.listener.on_start_listen)
         self.voice_recognition.next.connect(self.listener.on_next)
         self.voice_recognition.previous.connect(self.listener.on_previous)
         self.voice_recognition.undo.connect(self.listener.on_undo)

@@ -22,6 +22,7 @@ class VoiceRecognitionService(QObject):
     to text by using the Google Cloud Speech-to-Text API
     """
 
+    start_listen = Signal()
     next = Signal()
     previous = Signal()
     undo = Signal()
@@ -97,6 +98,7 @@ class VoiceRecognitionService(QObject):
         if result:
             #  when the keyword gets detected, the user can input a command
             LOGGER.info('[%s] detected keyword', str(datetime.now()))
+            self.start_listen.emit()
             self.listen_to_command()
 
     def listen_to_command(self):
@@ -107,7 +109,6 @@ class VoiceRecognitionService(QObject):
         recognizer = sr.Recognizer()
         #  listen to a single command
         with sr.Microphone() as source:
-            LOGGER.info("Listening for command")
             audio = recognizer.listen(source)
         try:
             #  convert command to string,
