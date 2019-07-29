@@ -77,7 +77,7 @@ If you are running the keyword example, you need to clone the Porcupine API
 
     git clone https://github.com/Picovoice/Porcupine.git
 
-Then, you have to set the following environment variables (here the path is just relative to the Porcupine folder, set the full path) :
+Then, you have to set the following environment variables (here the paths are just relative to the Porcupine folder, set the full paths) :
 
 ::
 
