@@ -27,6 +27,8 @@ class VoiceRecognitionService(QObject):
     previous = Signal()
     undo = Signal()
     quit = Signal()
+    google_api_not_understand = Signal()
+    google_api_request_failure = Signal(str)
     voice_command = Signal(str)
 
     def __init__(self):
@@ -131,7 +133,6 @@ class VoiceRecognitionService(QObject):
             else:
                 self.voice_command.emit(words)
         except sr.UnknownValueError:
-            LOGGER.info("Google Speech Recognition could not understand audio")
+            self.google_api_not_understand.emit()
         except sr.RequestError as exception:
-            LOGGER.info("Could not request results from Google Speech "
-                        "Recognition service; %s", exception)
+            self.google_api_request_failure.emit(exception)

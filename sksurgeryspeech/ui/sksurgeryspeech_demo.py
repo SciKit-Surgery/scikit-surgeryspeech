@@ -62,6 +62,21 @@ class VoiceListener(PySide2.QtCore.QObject):
         """
         LOGGER.info("Generic voice signal caught with input: %s", input_string)
 
+    @PySide2.QtCore.Slot()
+    def on_google_api_not_understand(self):
+        """
+        Slot if the google api doesn't understand audio
+        """
+        LOGGER.info("Google Speech Recognition could not understand audio")
+
+    @PySide2.QtCore.Slot()
+    def on_google_api_request_failure(self, exception):
+        """
+        Slot if somethig with the google api went wrong
+        """
+        LOGGER.info("Could not request results from Google Speech "
+                    "Recognition service; %s", exception)
+
 
 class SpeechRecognitionDemo(PySide2.QtCore.QObject):
 
@@ -107,6 +122,10 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         self.voice_recognition.quit.connect(self.listener.on_quit)
         self.voice_recognition.voice_command\
             .connect(self.listener.on_voice_signal)
+        self.voice_recognition.google_api_not_understand\
+            .connect(self.listener.on_google_api_not_understand)
+        self.voice_recognition.google_api_request_failure\
+            .connect(self.listener.on_google_api_request_failure)
 
     def run_demo(self):
         """
