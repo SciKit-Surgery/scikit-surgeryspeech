@@ -135,4 +135,4 @@ class VoiceRecognitionService(QObject):
         except sr.UnknownValueError:
             self.google_api_not_understand.emit()
         except sr.RequestError as exception:
-            self.google_api_request_failure.emit(exception)
+            self.google_api_request_failure.emit(str(exception))
