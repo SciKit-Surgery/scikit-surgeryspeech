@@ -72,7 +72,7 @@ class VoiceListener(PySide2.QtCore.QObject):
     @PySide2.QtCore.Slot()
     def on_google_api_request_failure(self, exception):
         """
-        Slot if somethig with the google api went wrong
+        Slot if something with the google api went wrong
         """
         LOGGER.info("Could not request results from Google Speech "
                     "Recognition service; %s", exception)
