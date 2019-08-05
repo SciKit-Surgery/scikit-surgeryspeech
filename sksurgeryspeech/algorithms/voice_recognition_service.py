@@ -30,8 +30,10 @@ class VoiceRecognitionService(QObject):
     google_api_not_understand = Signal()
     google_api_request_failure = Signal(str)
     voice_command = Signal(str)
+    start_processing_request = Signal()
+    end_processing_request = Signal()
 
-    def __init__(self):
+    def __init__(self, timeout_for_command=None):
         """
         Constructor.
         """
@@ -74,6 +76,10 @@ class VoiceRecognitionService(QObject):
         #  this raises a ValueError if the credential file isn't a valid json
         json.loads(self.credentials)
 
+        #  store the timeout_for_command variable as member
+        #  to use it later for the SpeechRecognition set up
+        self.timeout_for_command = timeout_for_command
+
         #  initialize a timer to call the listen_to_keyword method every 10ms
         self.timer = QTimer()
         self.timer.timeout.connect(self.listen_for_keyword)
@@ -111,13 +117,16 @@ class VoiceRecognitionService(QObject):
         recognizer = sr.Recognizer()
         #  listen to a single command
         with sr.Microphone() as source:
-            audio = recognizer.listen(source)
+            audio = recognizer\
+                .listen(source, phrase_time_limit=self.timeout_for_command)
         try:
             #  convert command to string,
             #  this string should later be used to fire a certain GUI command
+            self.start_processing_request.emit()
             words = recognizer.\
                 recognize_google_cloud(audio,
                                        credentials_json=self.credentials)
+            self.end_processing_request.emit()
             #  convert the spoken input in a signal
             #  for next, quit, previous and undo there are specific signals
             #  if none of them is said, a generic signal is emitted, containing
