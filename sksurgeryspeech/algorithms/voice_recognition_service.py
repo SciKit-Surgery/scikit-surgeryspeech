@@ -9,7 +9,7 @@ import struct
 from datetime import datetime
 import pyaudio
 import speech_recognition as sr
-from PySide2.QtCore import QObject, Signal, QTimer
+from PySide2.QtCore import QObject, Signal, Slot, QThread, QTimer
 
 from porcupine import Porcupine
 
@@ -23,6 +23,7 @@ class VoiceRecognitionService(QObject):
     """
 
     start_listen = Signal()
+    stop_timer = Signal()
     next = Signal()
     previous = Signal()
     undo = Signal()
@@ -84,6 +85,7 @@ class VoiceRecognitionService(QObject):
         self.timer = QTimer()
         self.timer.timeout.connect(self.listen_for_keyword)
         self.timer.setInterval(10)
+        self.stop_timer.connect(self.__stop)
         LOGGER.info("Created Voice Recognition Service")
 
     def run(self):
@@ -94,6 +96,22 @@ class VoiceRecognitionService(QObject):
         LOGGER.info("run method executed")
         #  start the timer to start the background listening
         self.timer.start()
+
+    def request_stop(self):
+        """
+        Called by external client to stop timer.
+        """
+        LOGGER.info("Requesting VoiceRecognitionService to stop timer.")
+        self.stop_timer.emit()
+        while self.timer.isActive():
+            QThread.msleep(100)
+        LOGGER.info("Requested VoiceRecognitionService to stop timer.")
+
+    @Slot()
+    def __stop(self):
+        LOGGER.info("Stopping VoiceRecognitionService timer.")
+        self.timer.stop()
+        LOGGER.info("Stopped VoiceRecognitionService timer.")
 
     def listen_for_keyword(self):
         """
