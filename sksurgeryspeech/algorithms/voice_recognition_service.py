@@ -54,7 +54,7 @@ class VoiceRecognitionService(QObject):
         model_file_path = os.environ['PORCUPINE_PARAMS']
         keyword_file_paths = [os.environ['PORCUPINE_KEYWORD']]
         sensitivities = [1.0]
-
+        self.interval = 10
         self.handle = Porcupine(library_path,
                                 model_file_path,
                                 keyword_file_paths=keyword_file_paths,
@@ -84,7 +84,7 @@ class VoiceRecognitionService(QObject):
         #  initialize a timer to call the listen_to_keyword method every 10ms
         self.timer = QTimer()
         self.timer.timeout.connect(self.listen_for_keyword)
-        self.timer.setInterval(10)
+        self.timer.setInterval(self.interval)
         self.stop_timer.connect(self.__stop)
         LOGGER.info("Created Voice Recognition Service")
 
@@ -103,8 +103,9 @@ class VoiceRecognitionService(QObject):
         """
         LOGGER.info("Requesting VoiceRecognitionService to stop timer.")
         self.stop_timer.emit()
+        QThread.msleep(self.interval * 3)
         while self.timer.isActive():
-            QThread.msleep(100)
+            QThread.msleep(self.interval * 3)
         LOGGER.info("Requested VoiceRecognitionService to stop timer.")
 
     @Slot()
