@@ -81,11 +81,9 @@ class VoiceRecognitionService(QObject):
         #  to use it later for the SpeechRecognition set up
         self.timeout_for_command = timeout_for_command
 
-        #  initialize a timer to call the listen_to_keyword method every 10ms
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.listen_for_keyword)
-        self.timer.setInterval(self.interval)
-        self.stop_timer.connect(self.__stop)
+        # Creating timer later, in the context of the running thread.
+        self.timer = None
+        
         LOGGER.info("Created Voice Recognition Service")
 
     def run(self):
@@ -94,6 +92,13 @@ class VoiceRecognitionService(QObject):
         background
         """
         LOGGER.info("run method executed")
+
+        # Creating the timer in the context of the running thread.
+        self.timer = QTimer()
+        self.timer.setInterval(self.interval)
+        self.timer.timeout.connect(self.listen_for_keyword)
+        self.stop_timer.connect(self.__stop)
+
         #  start the timer to start the background listening
         self.timer.start()
 
@@ -112,6 +117,7 @@ class VoiceRecognitionService(QObject):
     def __stop(self):
         LOGGER.info("Stopping VoiceRecognitionService timer.")
         self.timer.stop()
+        QThread.msleep(self.interval * 3)
         LOGGER.info("Stopped VoiceRecognitionService timer.")
 
     def listen_for_keyword(self):
