@@ -83,7 +83,7 @@ class VoiceRecognitionService(QObject):
 
         # Creating timer later, in the context of the running thread.
         self.timer = None
-        
+
         LOGGER.info("Created Voice Recognition Service")
 
     def run(self):
