@@ -1,10 +1,10 @@
 
 {
-	"porcupine dynamic library path" : "/home/thompson/data/Porcupine/lib/linux/x86_64/libpv_porcupine.so",
+	"porcupine dynamic library path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/linux/x86_64/libpv_porcupine.so",
 
 
-	"porcupine model file path" : "/home/thompson/data/Porcupine/lib/common/porcupine_params.pv",
-	"porcupine keyword file" : ["/home/thompson/data/Porcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
+	"porcupine model file path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/common/porcupine_params.pv",
+	"porcupine keyword file" : [".tox/py37/lib/python3.7/site-packages/pvporcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
 
 	"google credentials file" : "snappy-speech-6ff24bf3e262.json",
 	"timeout for command" : 3,

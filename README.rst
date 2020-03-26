@@ -29,7 +29,7 @@ converted to QT Signals.
 
 The speech recognition is done by the `Google Cloud API`_, you have to get the credentials to use it or change the recognition service.
 
-Keyword detection is done by the `Porcupine API`_, you have to set different paths in your environment variables to get it running, described below.
+Keyword detection is done by the `Porcupine API`_. This should be have been installed automatically via the pvporcupine dependency
 
 Please explore the project structure, and implement your own functionality.
 
@@ -40,11 +40,10 @@ To run an example, just start
 
 ::
 
-    sksurgeryspeech.py
+    sksurgeryspeech.py -c example_config.json
 
-Make sure Google Cloud API is set up correctly as described in the section below.
 
-Also you have to set all the Parameters for the Porcupine keyword detection, also described below.
+The config file should define the paths for the porcupine library and the Google Cloud API if you are using it.
 
 You can then say the keyword depending on the Porcupine keyword file you chose and afterwards a command. The command "quit" exits the application.
 
@@ -85,20 +84,14 @@ Ubuntu
 Set up the Porcupine keyword detection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you are running the keyword example, you need to clone the Porcupine API
+Then, you have to set the following variables in the configuration file
 
 ::
-
-    git clone https://github.com/Picovoice/Porcupine.git
-
-Then, you have to set the following environment variables (here the paths are just relative to the Porcupine folder, set the full paths) :
-
-::
-
-    PYTHONPATH=Porcupine\binding\python
-    PORCUPINE_DYNAMIC_LIBRARY=Porcupine\lib\<your os>\<your processor type>\<dynamic-library-file>
-    PORCUPINE_PARAMS=Porcupine\lib\common\porcupine_params.pv
-    PORCUPINE_KEYWORD=Porcupine\resources\keyword_files\<your os>\<keyword file of your choice>
+    
+   "porcupine dynamic library path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/linux/x86_64/libpv_porcupine.so",
+	"porcupine model file path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/common/porcupine_params.pv",
+	"porcupine keyword file" : [".tox/py37/lib/python3.7/site-packages/pvporcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
+       
 
 You can also `generate your own keyword files`_
 
@@ -111,11 +104,11 @@ Use the Google Cloud speech recognition service
 .. _`Google Cloud API is set up correctly`:
 
 To use the Google Cloud speech recognition service, you need to `get the credentials`_ first. After signing up, you
-should get a json file with your credentials. Download this file and set the environment variable
+should get a json file with your credentials. Download this file and add add it to the configuration file
 
 ::
 
-    GOOGLE_APPLICATION_CREDENTIALS
+    "google credentials file" : "snappy-speech-6ff24bf3e262.json",
 
 To the path of your json file. You should then be able to run the application.
 
