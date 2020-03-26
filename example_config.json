@@ -1,0 +1,13 @@
+
+{
+	"porcupine dynamic library path" : "/home/thompson/data/Porcupine/lib/linux/x86_64/libpv_porcupine.so",
+
+
+	"porcupine model file path" : "/home/thompson/data/Porcupine/lib/common/porcupine_params.pv",
+	"porcupine keyword file" : ["/home/thompson/data/Porcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
+
+	"google credentials file" : "snappy-speech-6ff24bf3e262.json",
+	"timeout for command" : 3,
+	"sensitivities" : [1.0],
+	"interval": 10
+}
