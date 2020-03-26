@@ -2,7 +2,6 @@
 Speech API algorithm
 """
 # pylint: disable=no-name-in-module,import-error
-import os
 import logging
 import json
 import struct
@@ -11,7 +10,7 @@ import pyaudio
 import speech_recognition as sr
 from PySide2.QtCore import QObject, Signal, Slot, QThread, QTimer
 
-from porcupine import Porcupine
+from pvporcupine import Porcupine
 
 LOGGER = logging.getLogger("voice_recognition_logger")
 
@@ -34,27 +33,42 @@ class VoiceRecognitionService(QObject):
     start_processing_request = Signal()
     end_processing_request = Signal()
 
-    def __init__(self, timeout_for_command=None):
+    def __init__(self, config):
         """
-        Constructor.
+        Construct the service.
+        Configuration must contain
+        porcupine dynamic library path:
+            Porcupine/lib/<operating_system>/<processor_type>/<library_file>
+        porcupine model file path:
+            Porcupine/lib/common/porcupine_params.pv
+        porcupine keyword file(s):
+            Porcupine/resources/keyword_files/<operating_system>/<keyword>
+        optional:
+        google credentials file: json file with google cloud api credentials
+        timeout for command: default None,
         """
         LOGGER.info("Creating Voice Recognition Service")
         # Need this for SignalInstance
         super(VoiceRecognitionService, self).__init__()
 
-        #  Initialize Porcupine, several path are needed:
-        #    the dynamic linked library file of your operating system:
-        #      Porcupine/lib/<operating_system>/<processor_type>/<library_file>
-        #    the porcupine params file:
-        #      Porcupine/lib/common/porcupine_params.pv
-        #    the porcupine keyword file:
-        #      Porcupine/resources/keyword_files/<operating_system>/<keyword>
-        #  make sure to set your environment variables to these paths
-        library_path = os.environ['PORCUPINE_DYNAMIC_LIBRARY']
-        model_file_path = os.environ['PORCUPINE_PARAMS']
-        keyword_file_paths = [os.environ['PORCUPINE_KEYWORD']]
-        sensitivities = [1.0]
-        self.interval = 10
+        self.timeout_for_command = config.get("timeout for command", None)
+
+        library_path = config.get("porcupine dynamic library path", None)
+        if library_path is None:
+            raise KeyError("Config must contain porcupine dynamic",
+                           " library path")
+
+        model_file_path = config.get("porcupine model file path", None)
+        if model_file_path is None:
+            raise KeyError("Config must contain porcupine model file path")
+
+        keyword_file_paths = config.get("porcupine keyword file", None)
+        if keyword_file_paths is None:
+            raise KeyError("Config must contain porcupine keyword file")
+
+        sensitivities = config.get("sensitivities", [1.0])
+        self.interval = config.get("interval", 10)
+
         self.handle = Porcupine(library_path,
                                 model_file_path,
                                 keyword_file_paths=keyword_file_paths,
@@ -70,16 +84,14 @@ class VoiceRecognitionService(QObject):
         #  this is to add the credentials for the google cloud api
         #  set the environment variable GOOGLE_APPLICATION_CREDENTIALS
         #  to the path  of your json file with credentials
-        key_file_path = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
-        with open(key_file_path, 'r') as file:
-            self.credentials = file.read()
+        key_file_path = config.get('google credentials file', None)
+        self.credentials = None
+        if key_file_path is not None:
+            with open(key_file_path, 'r') as file:
+                self.credentials = file.read()
 
-        #  this raises a ValueError if the credential file isn't a valid json
-        json.loads(self.credentials)
-
-        #  store the timeout_for_command variable as member
-        #  to use it later for the SpeechRecognition set up
-        self.timeout_for_command = timeout_for_command
+                #r aises a ValueError if the credential file isn't a valid json
+                json.loads(self.credentials)
 
         # Creating timer later, in the context of the running thread.
         self.timer = None

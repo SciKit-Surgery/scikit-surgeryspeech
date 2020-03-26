@@ -6,6 +6,8 @@ Demo for the Speech API module
 import sys
 import logging
 import PySide2.QtCore
+from sksurgerycore.configuration.configuration_manager import \
+        ConfigurationManager
 from sksurgeryspeech.algorithms import voice_recognition_service as speech_api
 
 LOGGER = logging.getLogger("voice_recognition_logger")
@@ -88,7 +90,7 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
     """
     Demo class for the Speech API module
     """
-    def __init__(self):
+    def __init__(self, config_file):
         """
         Constructor.
         """
@@ -105,8 +107,10 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         voice_recognition_logger.addHandler(file_handler)
 
         #  create VoiceRecognitionService()
-        self.voice_recognition = speech_api\
-            .VoiceRecognitionService(timeout_for_command=3)
+
+        configurer = ConfigurationManager(config_file)
+        config = configurer.get_copy()
+        self.voice_recognition = speech_api.VoiceRecognitionService(config)
         #  create VoiceListener() which in this example has all the slots to
         #  react to the signals from the VoiceRecognitionService()
         self.listener = VoiceListener()
