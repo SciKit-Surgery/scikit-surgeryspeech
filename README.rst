@@ -64,9 +64,23 @@ You can clone the repository using the following command:
 
 If you have problems running the application, you might need to install portaudio
 
+Mac
 ::
 
     brew install portaudio
+
+Ubuntu
+::
+
+    sudo apt-get install libasound-dev portaudio19-dev
+
+If you're going to try sphinx might need to install pulseaudo-dev
+
+Ubuntu
+::
+
+    sudo apt-get install swig libpulse-dev
+
 
 Set up the Porcupine keyword detection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
