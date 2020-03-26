@@ -51,8 +51,12 @@ setup(
     ),
 
     install_requires=[
-        'six>=1.10',
-        'numpy>=1.11',
+        'pyaudio',
+        'SpeechRecognition',
+        'google-api-python-client',
+        'oauth2client',
+        'PySide2',
+        'scikit-surgerycore',
         'pvporcupine'
     ],
 
