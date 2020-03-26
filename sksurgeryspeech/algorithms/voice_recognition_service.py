@@ -160,21 +160,25 @@ class VoiceRecognitionService(QObject):
             #  convert command to string,
             #  this string should later be used to fire a certain GUI command
             self.start_processing_request.emit()
-            words = recognizer.\
-                recognize_google_cloud(audio,
-                                       credentials_json=self.credentials)
+            #words = recognizer.\
+                            #    recognize_google_cloud(audio,
+            #                           credentials_json=self.credentials)
+            words = recognizer.recognize_sphinx(audio)
+            print(words)
             self.end_processing_request.emit()
             #  convert the spoken input in a signal
             #  for next, quit, previous and undo there are specific signals
             #  if none of them is said, a generic signal is emitted, containing
             #  the string of the spoken input
-            if words == "next ":
+            if "next" in words:
                 self.next.emit()
-            elif words == "quit ":
+            elif "quit" in words:
                 self.quit.emit()
-            elif words == "previous ":
+            elif "exit" in words:
+                self.quit.emit()
+            elif "previous" in words:
                 self.previous.emit()
-            elif words == "undo ":
+            elif "undo" in words:
                 self.undo.emit()
             else:
                 self.voice_command.emit(words)
