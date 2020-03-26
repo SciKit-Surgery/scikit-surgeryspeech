@@ -123,7 +123,6 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         #  Move the VoiceRecognitionService() to a separate thread so it doesn't
         #  block the main thread
         self.listener_thread = PySide2.QtCore.QThread()
-        self.voice_recognition.timer.moveToThread(self.listener_thread)
         self.voice_recognition.moveToThread(self.listener_thread)
         self.listener_thread.started.connect(self.voice_recognition.run)
 
