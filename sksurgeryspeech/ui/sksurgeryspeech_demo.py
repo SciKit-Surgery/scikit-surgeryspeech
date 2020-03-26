@@ -46,15 +46,6 @@ class VoiceListener(PySide2.QtCore.QObject):
         LOGGER.info("Undo signal caught")
 
     @PySide2.QtCore.Slot()
-    def on_quit(self):
-        """
-        Slot for the quit signal
-        Quits application
-        """
-        LOGGER.info("Quit signal caught... Exit application")
-        PySide2.QtCore.QCoreApplication.quit()
-
-    @PySide2.QtCore.Slot()
     def on_voice_signal(self, input_string):
         """
         Slot for the voice signal,
@@ -122,8 +113,7 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
 
         #  Move the VoiceRecognitionService() to a separate thread so it doesn't
         #  block the main thread
-        self.listener_thread = PySide2.QtCore.QThread()
-        self.voice_recognition.timer.moveToThread(self.listener_thread)
+        self.listener_thread = PySide2.QtCore.QThread(self)
         self.voice_recognition.moveToThread(self.listener_thread)
         self.listener_thread.started.connect(self.voice_recognition.run)
 
@@ -134,7 +124,7 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         self.voice_recognition.next.connect(self.listener.on_next)
         self.voice_recognition.previous.connect(self.listener.on_previous)
         self.voice_recognition.undo.connect(self.listener.on_undo)
-        self.voice_recognition.quit.connect(self.listener.on_quit)
+        self.voice_recognition.quit.connect(self.on_quit)
         self.voice_recognition.voice_command\
             .connect(self.listener.on_voice_signal)
         self.voice_recognition.google_api_not_understand\
@@ -156,4 +146,19 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         self.listener_thread.start()
         #  start the application, meaning starting the infinite Event Loop which
         #  stops when the user says "start" followed by "quit"
+
         return sys.exit(app.exec_())
+
+    @PySide2.QtCore.Slot()
+    def on_quit(self):
+        """
+        Slot for the quit signal
+        Quits application
+        """
+        LOGGER.info("Quit signal caught... Exit application")
+        self.voice_recognition.request_stop()
+        self.listener_thread.quit()
+        while not self.listener_thread.isFinished():
+            PySide2.QtCore.QThread.msleep(100 * 3)
+            LOGGER.info("Waiting for listener thread to stop")
+        PySide2.QtCore.QCoreApplication.quit()
