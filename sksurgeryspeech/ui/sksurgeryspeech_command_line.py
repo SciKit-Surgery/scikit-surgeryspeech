@@ -20,7 +20,13 @@ def main(args=None):
         action='version',
         version='scikit-surgeryspeech version ' + friendly_version_string)
 
+    parser.add_argument(
+        "-c", "--config",
+        required=True,
+        type=str,
+        help="Configuration file")
+
     args = parser.parse_args(args)
 
-    demo = sksurgeryspeech_demo.SpeechRecognitionDemo()
+    demo = sksurgeryspeech_demo.SpeechRecognitionDemo(args.config)
     demo.run_demo()
