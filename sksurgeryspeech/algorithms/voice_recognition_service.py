@@ -23,15 +23,10 @@ class VoiceRecognitionService(QObject):
 
     start_listen = Signal()
     stop_timer = Signal()
-    next = Signal()
-    previous = Signal()
-    undo = Signal()
-    quit = Signal()
     google_api_not_understand = Signal()
     google_api_request_failure = Signal(str)
     voice_command = Signal(str)
     start_processing_request = Signal()
-    end_processing_request = Signal()
 
     def __init__(self, config):
         """
@@ -169,23 +164,7 @@ class VoiceRecognitionService(QObject):
             self.start_processing_request.emit()
             words = self._recognise(audio)
 
-            self.end_processing_request.emit()
-            #  convert the spoken input in a signal
-            #  for next, quit, previous and undo there are specific signals
-            #  if none of them is said, a generic signal is emitted, containing
-            #  the string of the spoken input
-            if "next" in words:
-                self.next.emit()
-            elif "quit" in words:
-                self.quit.emit()
-            elif "exit" in words:
-                self.quit.emit()
-            elif "previous" in words:
-                self.previous.emit()
-            elif "undo" in words:
-                self.undo.emit()
-            else:
-                self.voice_command.emit(words)
+            self.voice_command.emit(words)
         except sr.UnknownValueError:
             self.google_api_not_understand.emit()
         except sr.RequestError as exception:
