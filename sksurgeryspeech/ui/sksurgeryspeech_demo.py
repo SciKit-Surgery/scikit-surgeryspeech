@@ -26,34 +26,6 @@ class VoiceListener(PySide2.QtCore.QObject):
         """
         LOGGER.info("Listening for command")
 
-    @PySide2.QtCore.Slot()
-    def on_next(self):
-        """
-        Slot for next signal
-        """
-        LOGGER.info("Next signal caught")
-
-    @PySide2.QtCore.Slot()
-    def on_previous(self):
-        """
-        Slot for the previous signal
-        """
-        LOGGER.info("Previous signal caught")
-
-    @PySide2.QtCore.Slot()
-    def on_undo(self):
-        """
-        Slot for the undo signal
-        """
-        LOGGER.info("Undo signal caught")
-
-    @PySide2.QtCore.Slot()
-    def on_voice_signal(self, input_string):
-        """
-        Slot for the voice signal,
-        which just contains the microphone input as string
-        """
-        LOGGER.info("Generic voice signal caught with input: %s", input_string)
 
     @PySide2.QtCore.Slot()
     def on_google_api_not_understand(self):
@@ -76,13 +48,6 @@ class VoiceListener(PySide2.QtCore.QObject):
         Slot when the request is sent to Google API
         """
         LOGGER.info("Processing...")
-
-    @PySide2.QtCore.Slot()
-    def on_end_processing_request(self):
-        """
-        Slot when the processing of the request is done
-        """
-        LOGGER.info("Processing done")
 
 
 class SpeechRecognitionDemo(PySide2.QtCore.QObject):
@@ -125,21 +90,14 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         #  with the Slots of the VoiceListener
         self.voice_recognition.start_listen\
             .connect(self.listener.on_start_listen)
-        self.voice_recognition.next.connect(self.listener.on_next)
-        self.voice_recognition.previous.connect(self.listener.on_previous)
-        self.voice_recognition.undo.connect(self.listener.on_undo)
-        self.voice_recognition.quit.connect(self.on_quit)
-        self.voice_recognition.voice_command\
-            .connect(self.listener.on_voice_signal)
         self.voice_recognition.google_api_not_understand\
             .connect(self.listener.on_google_api_not_understand)
         self.voice_recognition.google_api_request_failure\
             .connect(self.listener.on_google_api_request_failure)
         self.voice_recognition.start_processing_request\
             .connect(self.listener.on_start_processing_request)
-        self.voice_recognition.end_processing_request\
-            .connect(self.listener.on_end_processing_request)
-
+        #connect this to our own slot
+        self.voice_recognition.voice_command.connect(self.on_voice_signal)
     def run_demo(self):
         """
         Entry point to run the demo
@@ -154,15 +112,18 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         return sys.exit(app.exec_())
 
     @PySide2.QtCore.Slot()
-    def on_quit(self):
+    def on_voice_signal(self, input_string):
         """
         Slot for the quit signal
         Quits application
         """
-        LOGGER.info("Quit signal caught... Exit application")
-        self.voice_recognition.request_stop()
-        self.listener_thread.quit()
-        while not self.listener_thread.isFinished():
-            PySide2.QtCore.QThread.msleep(100 * 3)
-            LOGGER.info("Waiting for listener thread to stop")
-        PySide2.QtCore.QCoreApplication.quit()
+        LOGGER.info("Got voice signal, %s", input_string)
+        if "exit" in input_string or "quit" in input_string:
+
+            LOGGER.info("Quit signal caught... Exit application")
+            self.voice_recognition.request_stop()
+            self.listener_thread.quit()
+            while not self.listener_thread.isFinished():
+                PySide2.QtCore.QThread.msleep(100 * 3)
+                LOGGER.info("Waiting for listener thread to stop")
+            PySide2.QtCore.QCoreApplication.quit()
