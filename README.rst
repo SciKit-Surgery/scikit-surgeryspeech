@@ -116,25 +116,19 @@ To the path of your json file. You should then be able to run the application.
 Change speech recognition service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To change the speech recognition service if you don't want to use the Google Cloud API, just change the command
+You can try different speech recognition services by changing the recogniser entry in the config file. 
+sphinx, google and google_cloud have all been tested, other options are possible but may not be implemented yet.
 
 ::
 
-    words = recognizer.recognize_google_cloud(audio, credentials_json=self.credentials)
-
-(file "voice_recognition_service.py", method "listen_to_command(self)")
-to the recognition service of your choice. Currently available services are:
-
-::
-
-    recognizer.recognize_sphinx(audio)
-    recognizer.recognize_google(audio)
-    recognizer.recognize_google_cloud(audio, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS)
-    recognizer.recognize_wit(audio, key=WIT_AI_KEY)
-    recognizer.recognize_bing(audio, key=BING_KEY)
-    recognizer.recognize_azure(audio, key=AZURE_SPEECH_KEY)
-    recognizer.recognize_houndify(audio, client_id=HOUNDIFY_CLIENT_ID, client_key=HOUNDIFY_CLIENT_KEY)
-    recognizer.recognize_ibm(audio, username=IBM_USERNAME, password=IBM_PASSWORD)
+    "recogniser" : "sphinx"
+    "recogniser" : "google" 
+    "recogniser" : "google_cloud"
+    "recogniser" : "wit"
+    "recogniser" : "bing"
+    "recogniser" : "azure"
+    "recogniser" : "houndify"
+    "recogniser" : "ibm"
 
 Python development
 ^^^^^^^^^^^^^^^^^^
