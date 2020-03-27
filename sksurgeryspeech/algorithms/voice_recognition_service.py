@@ -72,8 +72,6 @@ class VoiceRecognitionService(QObject):
         self.recogniser = config.get("recogniser", "sphinx")
         self.sphinx_keywords = config.get("sphinx keywords", None)
 
-        
-
         sensitivities = config.get("sensitivities", [1.0])
         self.interval = config.get("interval", 10)
 
@@ -168,42 +166,7 @@ class VoiceRecognitionService(QObject):
             #  convert command to string,
             #  this string should later be used to fire a certain GUI command
             self.start_processing_request.emit()
-            words = ""
-            if self.recogniser == "sphinx":
-                print("running sphinx")
-                words = recognizer.recognize_sphinx(
-                    audio, keyword_entries = self.sphinx_keywords)
-            elif self.recogniser == "google_cloud":
-                words = recognizer.recognize_google_cloud(
-                    audio, credentials_json=self.credentials)
-            elif self.recogniser == "google":
-                words = recognizer.recognize_google(audio)
-            elif self.recogniser == "bing":
-                raise NotImplementedError(
-                    "Key credentials for bing not set up")
-                #something like this, but might need to change credentials
-                #words = recognizer.recognize_bing(audio, key=self.credentials)
-            elif self.recogniser == "houndify":
-                raise NotImplementedError(
-                    "Key credentials for houndify not set up")
-                #something like this, but might need to change credentials
-                #words = recognizer.recognize_houndify(
-                #    audio, client_id=self.credentials,
-                #    client_key = self.credentials)
-            elif self.recogniser == "ibm":
-                raise NotImplementedError(
-                    "Key credentials for ibm not set up")
-                #something like this, but might need to change credentials
-                #words = recognizer.recognize_ibm(
-                #    audio, username=notset, password=notset)
-            elif self.recogniser == "wit":
-                raise NotImplementedError(
-                    "Key credentials for wit not set up")
-                #something like this, but might need to change credentials
-                #words = recognizer.recognize_wit(audio, key=self.credentials)
-            else:
-                raise ValueError("Unrecognised recogniser", self.recogniser)
-                 
+            words = self.recognise(recognizer, audio)
 
             self.end_processing_request.emit()
             #  convert the spoken input in a signal
@@ -226,3 +189,42 @@ class VoiceRecognitionService(QObject):
             self.google_api_not_understand.emit()
         except sr.RequestError as exception:
             self.google_api_request_failure.emit(str(exception))
+
+    def recognise(self, recognizer, audio):
+        words = ""
+        if self.recogniser == "sphinx":
+            print ("running sphinx")
+            words = recognizer.recognize_sphinx(
+                audio, keyword_entries = self.sphinx_keywords)
+        elif self.recogniser == "google_cloud":
+            words = recognizer.recognize_google_cloud(
+                audio, credentials_json=self.credentials)
+        elif self.recogniser == "google":
+            words = recognizer.recognize_google(audio)
+        elif self.recogniser == "bing":
+            raise NotImplementedError(
+                "Key credentials for bing not set up")
+            #something like this, but might need to change credentials
+            #words = recognizer.recognize_bing(audio, key=self.credentials)
+        elif self.recogniser == "houndify":
+            raise NotImplementedError(
+                "Key credentials for houndify not set up")
+            #something like this, but might need to change credentials
+            #words = recognizer.recognize_houndify(
+            #    audio, client_id=self.credentials,
+            #    client_key = self.credentials)
+        elif self.recogniser == "ibm":
+            raise NotImplementedError(
+                "Key credentials for ibm not set up")
+            #something like this, but might need to change credentials
+            #words = recognizer.recognize_ibm(
+            #    audio, username=notset, password=notset)
+        elif self.recogniser == "wit":
+            raise NotImplementedError(
+                "Key credentials for wit not set up")
+            #something like this, but might need to change credentials
+            #words = recognizer.recognize_wit(audio, key=self.credentials)
+        else:
+            raise ValueError("Unrecognised recogniser", self.recogniser)
+             
+        return words
