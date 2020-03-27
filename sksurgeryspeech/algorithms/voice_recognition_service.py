@@ -45,6 +45,9 @@ class VoiceRecognitionService(QObject):
             Porcupine/resources/keyword_files/<operating_system>/<keyword>
         optional:
         google credentials file: json file with google cloud api credentials
+        recogniser: api to use, options are sphinx, google, google_cloud,
+            bing, houdify, ibm, wit
+        sphinx keywords: a list of keywords and sensitivities for sphinx
         timeout for command: default None,
         """
         LOGGER.info("Creating Voice Recognition Service")
@@ -65,6 +68,11 @@ class VoiceRecognitionService(QObject):
         keyword_file_paths = config.get("porcupine keyword file", None)
         if keyword_file_paths is None:
             raise KeyError("Config must contain porcupine keyword file")
+
+        self.recogniser = config.get("recogniser", "sphinx")
+        self.sphinx_keywords = config.get("sphinx keywords", None)
+
+        
 
         sensitivities = config.get("sensitivities", [1.0])
         self.interval = config.get("interval", 10)
@@ -160,11 +168,39 @@ class VoiceRecognitionService(QObject):
             #  convert command to string,
             #  this string should later be used to fire a certain GUI command
             self.start_processing_request.emit()
-            #words = recognizer.\
-                            #    recognize_google_cloud(audio,
-            #                           credentials_json=self.credentials)
-            words = recognizer.recognize_sphinx(audio)
-            print(words)
+            words = ""
+            if self.recogniser == "sphinx":
+                words = recognizer.recognize_sphinx(
+                    audio, self.sphinx_keywords)
+            elif self.recogniser == "google_cloud":
+                words = recognizer.recognize_google_cloud(
+                    audio, credentials_json=self.credentials)
+            elif self.recogniser == "google":
+                words = recognizer.recognize_google(audio)
+            elif self.recogniser == "bing":
+                raise NotImplementedError(
+                    "Key credentials for bing not set up")
+                #something like this, but might need to change credentials
+                #words = recognizer.recognize_bing(audio, key=self.credentials)
+            elif self.recognizer == "houndify":
+                raise NotImplementedError(
+                    "Key credentials for houndify not set up")
+                #something like this, but might need to change credentials
+                #words = recognizer.recognize_houndify(
+                #    audio, client_id=self.credentials,
+                #    client_key = self.credentials)
+            elif self.recognizer == "ibm":
+                raise NotImplementedError(
+                    "Key credentials for ibm not set up")
+                #something like this, but might need to change credentials
+                #words = recognizer.recognize_ibm(
+                #    audio, username=notset, password=notset)
+            elif self.recognizer == "wit":
+                raise NotImplementedError(
+                    "Key credentials for wit not set up")
+                #something like this, but might need to change credentials
+                #words = recognizer.recognize_wit(audio, key=self.credentials)
+
             self.end_processing_request.emit()
             #  convert the spoken input in a signal
             #  for next, quit, previous and undo there are specific signals
