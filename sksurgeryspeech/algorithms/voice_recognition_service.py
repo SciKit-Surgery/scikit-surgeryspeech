@@ -170,8 +170,9 @@ class VoiceRecognitionService(QObject):
             self.start_processing_request.emit()
             words = ""
             if self.recogniser == "sphinx":
+                print("running sphinx")
                 words = recognizer.recognize_sphinx(
-                    audio, self.sphinx_keywords)
+                    audio, keyword_entries = self.sphinx_keywords)
             elif self.recogniser == "google_cloud":
                 words = recognizer.recognize_google_cloud(
                     audio, credentials_json=self.credentials)
@@ -182,24 +183,27 @@ class VoiceRecognitionService(QObject):
                     "Key credentials for bing not set up")
                 #something like this, but might need to change credentials
                 #words = recognizer.recognize_bing(audio, key=self.credentials)
-            elif self.recognizer == "houndify":
+            elif self.recogniser == "houndify":
                 raise NotImplementedError(
                     "Key credentials for houndify not set up")
                 #something like this, but might need to change credentials
                 #words = recognizer.recognize_houndify(
                 #    audio, client_id=self.credentials,
                 #    client_key = self.credentials)
-            elif self.recognizer == "ibm":
+            elif self.recogniser == "ibm":
                 raise NotImplementedError(
                     "Key credentials for ibm not set up")
                 #something like this, but might need to change credentials
                 #words = recognizer.recognize_ibm(
                 #    audio, username=notset, password=notset)
-            elif self.recognizer == "wit":
+            elif self.recogniser == "wit":
                 raise NotImplementedError(
                     "Key credentials for wit not set up")
                 #something like this, but might need to change credentials
                 #words = recognizer.recognize_wit(audio, key=self.credentials)
+            else:
+                raise ValueError("Unrecognised recogniser", self.recogniser)
+                 
 
             self.end_processing_request.emit()
             #  convert the spoken input in a signal
