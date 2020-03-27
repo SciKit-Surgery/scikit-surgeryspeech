@@ -167,7 +167,7 @@ class VoiceRecognitionService(QObject):
             #  convert command to string,
             #  this string should later be used to fire a certain GUI command
             self.start_processing_request.emit()
-            words = self.recognise(audio)
+            words = self._recognise(audio)
 
             self.end_processing_request.emit()
             #  convert the spoken input in a signal
@@ -191,12 +191,11 @@ class VoiceRecognitionService(QObject):
         except sr.RequestError as exception:
             self.google_api_request_failure.emit(str(exception))
 
-    def recognise(self, audio):
+    def _recognise(self, audio):
         words = ""
         if self.recogniser == "sphinx":
-            print ("running sphinx")
             words = self.recognizer.recognize_sphinx(
-                audio, keyword_entries = self.sphinx_keywords)
+                audio, keyword_entries=self.sphinx_keywords)
         elif self.recogniser == "google_cloud":
             words = self.recognizer.recognize_google_cloud(
                 audio, credentials_json=self.credentials)
@@ -227,5 +226,5 @@ class VoiceRecognitionService(QObject):
             #words = self.recognizer.recognize_wit(audio, key=self.credentials)
         else:
             raise ValueError("Unrecognised recogniser", self.recogniser)
-             
+
         return words
