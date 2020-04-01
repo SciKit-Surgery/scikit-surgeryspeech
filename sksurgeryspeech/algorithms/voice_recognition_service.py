@@ -44,6 +44,8 @@ class VoiceRecognitionService(QObject):
             bing, houdify, ibm, wit
         sphinx keywords: a list of keywords and sensitivities for sphinx
         timeout for command: default None,
+
+        :raises: KeyError
         """
         LOGGER.info("Creating Voice Recognition Service")
         # Need this for SignalInstance
@@ -66,6 +68,10 @@ class VoiceRecognitionService(QObject):
 
         self.recogniser = config.get("recogniser", "sphinx")
         self.sphinx_keywords = config.get("sphinx keywords", None)
+        self._test_signals = config.get("test signals", None)
+
+        if self.recogniser == "testing" and self._test_signals is None:
+            raise KeyError("Asked for testing, with no test signals")
 
         self.recognizer = sr.Recognizer()
 
@@ -111,7 +117,11 @@ class VoiceRecognitionService(QObject):
         # Creating the timer in the context of the running thread.
         self.timer = QTimer()
         self.timer.setInterval(self.interval)
-        self.timer.timeout.connect(self.listen_for_keyword)
+        if self.recogniser != "testing":
+            self.timer.timeout.connect(self.listen_for_keyword)
+        else:
+            self.timer.timeout.connect(self._test_trigger)
+
         self.stop_timer.connect(self.__stop)
 
         #  start the timer to start the background listening
@@ -148,6 +158,33 @@ class VoiceRecognitionService(QObject):
             LOGGER.info('[%s] detected keyword', str(datetime.now()))
             self.start_listen.emit()
             self.listen_to_command()
+
+    def _test_trigger(self):
+        """
+        Used for testing, looks for a list of signals to send, and
+        sends the next one.
+        """
+        if len(self._test_signals) > 0:
+            #I did try using eval to avoid the following stack of
+            #elifs but it didn't seem to work.
+            #eval('self.%s.emit(%s)', signal[0], signal[1])
+            signal = self._test_signals.pop(0)
+            if signal[0] == 'stop_timer':
+                self.stop_timer.emit()
+            elif signal[0] == 'start_listen':
+                self.start_listen.emit()
+            elif signal[0] == 'google_api_not_understand':
+                self.google_api_not_understand.emit()
+            elif signal[0] == 'google_api_request_failure':
+                self.google_api_request_failure(signal[1])
+            elif signal[0] == 'voice_command':
+                self.voice_command.emit(signal[1])
+            elif signal[0] == 'start_processing_request':
+                self.start_processing_request.emit()
+            else:
+                LOGGER.info('Unknown signal (%s, %s)', signal[0], signal[1])
+        else:
+            self.voice_command.emit('quit')
 
     def listen_to_command(self):
         """

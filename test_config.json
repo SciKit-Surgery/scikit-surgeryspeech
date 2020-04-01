@@ -1,0 +1,26 @@
+
+{
+	"porcupine dynamic library path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/linux/x86_64/libpv_porcupine.so",
+
+
+	"porcupine model file path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/common/porcupine_params.pv",
+	"porcupine keyword file" : [".tox/py37/lib/python3.7/site-packages/pvporcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
+
+	"timeout for command" : 1,
+	"sensitivities" : [1.0],
+	"interval": 10, 
+
+	"recogniser" : "testing",
+	"test signals" : [
+		["start_listen", false], 
+		["google_api_not_understand", false],
+		["google_api_request_failure", "the internet is broken"],
+		["voice_command", "next"],
+		["voice_command", "previous"],
+		["voice_command", "next"],
+		["start_processing_request", false],
+		["unknown_command", "what's this"],
+		["voice_command", "quit"]],
+
+	"sphinx keywords" : [["quit", 0.5], ["next", 0.1], ["undo", 0.3], ["previous",0.3], ["exit", 0.3]]
+}
