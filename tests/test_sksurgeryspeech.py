@@ -3,11 +3,12 @@
 """scikit-surgeryspeech tests"""
 
 # Pytest style
-from platform import platform 
+from platform import system
 from sksurgeryspeech.algorithms import voice_recognition_service as speech_api
 
 def test_voice_recognition_service():
-    if platform == "Linux":
+    config = {}
+    if system() == "Linux":
         config = {
             "porcupine dynamic library path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/lib/linux/x86_64/libpv_porcupine.so",
             "porcupine model file path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/lib/common/porcupine_params.pv",
@@ -27,7 +28,7 @@ def test_voice_recognition_service():
                 ["unknown_command", "what's this"],
                 ["voice_command", "quit"]],
         }
-    elif platform == "Windows":
+    elif system() == "Windows":
         config = {
             "porcupine dynamic library path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/windows/x86_64/libpv_porcupine.dll",
             "porcupine model file path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/lib/common/porcupine_params.pv",
@@ -48,7 +49,7 @@ def test_voice_recognition_service():
                 ["voice_command", "quit"]],
         }
     else:
-    config = {
+        config = {
             "porcupine dynamic library path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/mac/x86_64/libpv_porcupine.dylib",
             "porcupine model file path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/lib/common/porcupine_params.pv",
             "porcupine keyword file" : [".tox/py36/lib/python3.6/site-packages/pvporcupine/resources/keyword_files/mac/porcupine_mac.ppn"],
