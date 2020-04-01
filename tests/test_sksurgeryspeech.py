@@ -7,9 +7,9 @@ from sksurgeryspeech.algorithms import voice_recognition_service as speech_api
 
 def test_voice_recognition_service():
     config = {
-         "porcupine dynamic library path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/linux/x86_64/libpv_porcupine.so",
-        "porcupine model file path" : ".tox/py37/lib/python3.7/site-packages/pvporcupine/lib/common/porcupine_params.pv",
-        "porcupine keyword file" : [".tox/py37/lib/python3.7/site-packages/pvporcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
+         "porcupine dynamic library path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/lib/linux/x86_64/libpv_porcupine.so",
+        "porcupine model file path" : ".tox/py36/lib/python3.6/site-packages/pvporcupine/lib/common/porcupine_params.pv",
+        "porcupine keyword file" : [".tox/py36/lib/python3.6/site-packages/pvporcupine/resources/keyword_files/linux/jarvis_linux.ppn"],
         "timeout for command" : 1,
         "sensitivities" : [1.0],
         "interval": 10,
