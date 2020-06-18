@@ -17,7 +17,7 @@ setup(
     description='Interface to speech services for image-guided surgery.',
     long_description=long_description,
     long_description_content_type='text/x-rst',
-    url='https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech',
+    url='https://github.com/UCL/scikit-surgeryspeech',
     author='Matt Clarkson',
     author_email='YOUR-EMAIL@ucl.ac.uk',
     license='BSD-3 license',

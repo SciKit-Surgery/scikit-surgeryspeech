@@ -63,7 +63,7 @@ You can clone the repository using the following command:
 
 ::
 
-    git clone https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech
+    git clone https://github.com/UCL/scikit-surgeryspeech
 
 If you have problems running the application, you might need to install portaudio
 
@@ -154,7 +154,7 @@ You can pip install directly from the repository as follows:
 
 ::
 
-    pip install git+https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech
+    pip install git+https://github.com/UCL/scikit-surgeryspeech
 
 
 
@@ -184,7 +184,7 @@ Supported by `Wellcome`_ and `EPSRC`_.
 
 
 .. _`Wellcome EPSRC Centre for Interventional and Surgical Sciences`: http://www.ucl.ac.uk/weiss
-.. _`source code repository`: https://weisslab.cs.ucl.ac.uk/WEISS/SoftwareRepositories/SNAPPY/scikit-surgeryspeech
+.. _`source code repository`: https://github.com/UCL/scikit-surgeryspeech
 .. _`SNAPPY`: https://weisslab.cs.ucl.ac.uk/WEISS/PlatformManagement/SNAPPY/wikis/home
 .. _`University College London (UCL)`: http://www.ucl.ac.uk/
 .. _`Wellcome`: https://wellcome.ac.uk/
