@@ -59,7 +59,7 @@ class SpeechRecognitionDemo(PySide2.QtCore.QObject):
         """
         Constructor.
         """
-        super(SpeechRecognitionDemo, self).__init__()
+        super().__init__()
 
         #  set up the logger
         voice_recognition_logger = logging.getLogger("voice_recognition_logger")

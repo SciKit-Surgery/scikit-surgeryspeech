@@ -2,15 +2,16 @@
 Speech API algorithm
 """
 # pylint: disable=no-name-in-module,import-error
+
 import logging
 import json
 import struct
 from datetime import datetime
 import pyaudio
+import pvporcupine
 import speech_recognition as sr
 from PySide2.QtCore import QObject, Signal, Slot, QThread, QTimer
 
-from pvporcupine import Porcupine
 
 LOGGER = logging.getLogger("voice_recognition_logger")
 
@@ -47,7 +48,7 @@ class VoiceRecognitionService(QObject):
         """
         LOGGER.info("Creating Voice Recognition Service")
         # Need this for SignalInstance
-        super(VoiceRecognitionService, self).__init__()
+        super().__init__()
 
         self.timeout_for_command = config.get("timeout for command", None)
 
@@ -72,17 +73,19 @@ class VoiceRecognitionService(QObject):
         sensitivities = config.get("sensitivities", [1.0])
         self.interval = config.get("interval", 10)
 
-        self.handle = Porcupine(library_path,
-                                model_file_path,
-                                keyword_file_paths=keyword_file_paths,
-                                sensitivities=sensitivities)
+        self.handle = pvporcupine.create(
+            library_path=library_path,
+            model_path=model_file_path,
+            keyword_paths=keyword_file_paths,
+            sensitivities=sensitivities)
+
         audio = pyaudio.PyAudio()
-        self.audio_stream = audio.open(rate=self.handle.sample_rate,
-                                       channels=1,
-                                       format=pyaudio.paInt16,
-                                       input=True,
-                                       frames_per_buffer=self.handle
-                                       .frame_length)
+        self.audio_stream = \
+            audio.open(rate=self.handle.sample_rate,
+                       channels=1,
+                       format=pyaudio.paInt16,
+                       input=True,
+                       frames_per_buffer=self.handle.frame_length)
 
         #  this is to add the credentials for the google cloud api
         #  set the environment variable GOOGLE_APPLICATION_CREDENTIALS
@@ -156,7 +159,7 @@ class VoiceRecognitionService(QObject):
         """
         #  listen to a single command
         with sr.Microphone() as source:
-            audio = self.recognizer\
+            audio = self.recognizer \
                 .listen(source, phrase_time_limit=self.timeout_for_command)
         try:
             #  convert command to string,
