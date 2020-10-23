@@ -146,7 +146,7 @@ class VoiceRecognitionService(QObject):
         pcm = self.audio_stream.read(self.handle.frame_length)
         pcm = struct.unpack_from("h" * self.handle.frame_length, pcm)
         result = self.handle.process(pcm)
-        if result:
+        if result >= 0:
             #  when the keyword gets detected, the user can input a command
             LOGGER.info('[%s] detected keyword', str(datetime.now()))
             self.start_listen.emit()
