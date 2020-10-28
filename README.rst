@@ -7,6 +7,8 @@ scikit-surgeryspeech
    :target: https://github.com/UCL/scikit-surgeryspeech
    :alt: Logo
 
+|
+
 .. image:: https://github.com/UCL/scikit-surgeryspeech/workflows/.github/workflows/ci.yml/badge.svg
    :target: https://github.com/UCL/scikit-surgeryspeech/actions
    :alt: GitHub Actions CI status
