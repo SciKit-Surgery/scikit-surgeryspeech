@@ -87,6 +87,9 @@ def setup(app):
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.imgmath']
 
+# We can't build pyaudio on the readthedocs VM
+autodoc_mock_imports = ['pyaudio']
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
