@@ -19,7 +19,28 @@ LOGGER = logging.getLogger("voice_recognition_logger")
 class VoiceRecognitionService(QObject):
     """
     Voice Recognition service which takes an microphone input and converts it
-    to text by using the Google Cloud Speech-to-Text API
+    to text by using the Google Cloud Speech-to-Text API.
+
+    Configuration dictionary must contain the following keys:
+
+    porcupine dynamic library path: \
+        Porcupine/lib/<operating_system>/<processor_type>/<library_file>
+
+    porcupine model file path: \
+        Porcupine/lib/common/porcupine_params.pv
+
+    porcupine keyword file(s): \
+        Porcupine/resources/keyword_files/<operating_system>/<keyword>
+
+    optional keys:
+
+    google credentials file: json file with google cloud api credentials
+
+    recogniser: api to use, options are sphinx, google, google_cloud, \
+        bing, houdify, ibm, wit
+        
+    sphinx keywords: a list of keywords and sensitivities for sphinx
+    timeout for command: default None
     """
 
     start_listen = Signal()
@@ -29,22 +50,10 @@ class VoiceRecognitionService(QObject):
     voice_command = Signal(str)
     start_processing_request = Signal()
 
-    def __init__(self, config):
+    def __init__(self, config: dict):
         """
         Construct the service.
-        Configuration must contain
-        porcupine dynamic library path:
-            Porcupine/lib/<operating_system>/<processor_type>/<library_file>
-        porcupine model file path:
-            Porcupine/lib/common/porcupine_params.pv
-        porcupine keyword file(s):
-            Porcupine/resources/keyword_files/<operating_system>/<keyword>
-        optional:
-        google credentials file: json file with google cloud api credentials
-        recogniser: api to use, options are sphinx, google, google_cloud,
-            bing, houdify, ibm, wit
-        sphinx keywords: a list of keywords and sensitivities for sphinx
-        timeout for command: default None,
+
         """
         LOGGER.info("Creating Voice Recognition Service")
         # Need this for SignalInstance
