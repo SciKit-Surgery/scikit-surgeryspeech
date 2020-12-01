@@ -38,7 +38,7 @@ class VoiceRecognitionService(QObject):
 
     recogniser: api to use, options are sphinx, google, google_cloud, \
         bing, houdify, ibm, wit
-        
+
     sphinx keywords: a list of keywords and sensitivities for sphinx
     timeout for command: default None
     """
