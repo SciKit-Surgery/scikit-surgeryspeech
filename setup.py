@@ -20,7 +20,7 @@ if in_rtd_build == 'true':
                 'oauth2client',
                 'PySide2',
                 'scikit-surgerycore',
-                'pvporcupine'
+                'pvporcupine < 2.0.0'
             ]
 else:
     install_requires = [
