@@ -40,9 +40,9 @@ else:
         description='Interface to speech services for image-guided surgery.',
         long_description=long_description,
         long_description_content_type='text/x-rst',
-        url='https://github.com/UCL/scikit-surgeryspeech',
-        author='Matt Clarkson',
-        author_email='YOUR-EMAIL@ucl.ac.uk',
+        url='https://github.com/SciKit-Surgery/scikit-surgeryspeech',
+        author='Steve Thompson',
+        author_email='s.thompson@ucl.ac.uk',
         license='BSD-3 license',
         classifiers=[
             'Development Status :: 3 - Alpha',
