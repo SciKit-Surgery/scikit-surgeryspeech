@@ -102,7 +102,7 @@ class VoiceRecognitionService(QObject):
         key_file_path = config.get('google credentials file', None)
         self.credentials = None
         if key_file_path is not None:
-            with open(key_file_path, 'r') as file:
+            with open(key_file_path, 'r', encoding='utf-8') as file:
                 self.credentials = file.read()
 
                 #r aises a ValueError if the credential file isn't a valid json

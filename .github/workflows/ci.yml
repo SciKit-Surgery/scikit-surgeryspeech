@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-ver: [3.6]
+        python-ver: [3.7, 3.8, 3.9]
         os: [ubuntu-18.04, macos-latest, windows-latest]
 
     steps:
@@ -25,9 +25,24 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get install portaudio19-dev
 
-      - name: Install dependencies
+      - name: Install dependencies (mac)
+        if: startsWith(matrix.os, 'macos')
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Install dependencies (ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Install dependencies (windows)
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipwin
+          pipwin install pyaudio
           pip install -r requirements-dev.txt
 
       - name: Run tests
