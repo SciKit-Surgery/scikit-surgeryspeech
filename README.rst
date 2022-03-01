@@ -31,7 +31,7 @@ scikit-surgeryspeech
 
 Author: Kim-Celine Kahl
 
-scikit-surgeryspeech is part of the `SNAPPY`_ software project, developed at the `Wellcome EPSRC Centre for Interventional and Surgical Sciences`_, part of `University College London (UCL)`_.
+scikit-surgeryspeech is part of the `SciKit-Surgery`_ software project, developed at the `Wellcome EPSRC Centre for Interventional and Surgical Sciences`_, part of `University College London (UCL)`_.
 
 scikit-surgeryspeech supports Python 3.6.
 
