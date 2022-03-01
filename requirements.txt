@@ -8,5 +8,5 @@ google-api-python-client
 oauth2client
 PySide2
 scikit-surgerycore
-pvporcupine < 2.0.0
+pvporcupine<2.0.0
 #PocketSphinx #uncomment this to get sphinx working

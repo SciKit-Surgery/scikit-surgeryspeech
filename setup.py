@@ -15,12 +15,13 @@ with open('README.rst') as f:
 in_rtd_build = os.getenv('IN_READTHEDOCS')
 if in_rtd_build == 'true':
     install_requires = [
+                'pyaudio',
                 'SpeechRecognition',
                 'google-api-python-client',
                 'oauth2client',
                 'PySide2',
                 'scikit-surgerycore',
-                'pvporcupine < 2.0.0'
+                'pvporcupine<2.0.0'
             ]
 else:
     install_requires = [
